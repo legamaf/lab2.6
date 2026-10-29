@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота 2.6</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+            color: #222;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+            max-width: 250px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e8e8e8;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Лабораторна робота 2.6</h1>
+    <h2>Налагодження JavaScript та фільтрування даних</h2>
+
+    <!-- Завдання 1 -->
+    <section>
+        <h3>Завдання 1. Створення масиву користувачів</h3>
+        <p>Створено масив користувачів з іменами, віком та містами.</p>
+    </section>
+
+    <!-- Завдання 2 -->
+    <section>
+        <h3>Завдання 2. Відображення даних у таблиці</h3>
+
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Ім'я</th>
+                    <th>Вік</th>
+                    <th>Місто</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+        </table>
+
+        <p id="resultCount" class="status"></p>
+    </section>
+
+    <!-- Завдання 3 -->
+    <section>
+        <h3>Завдання 3. Використання console.log()</h3>
+        <p>Інформація про відображуваних користувачів виводиться в консоль браузера.</p>
+    </section>
+
+    <!-- Завдання 4 -->
+    <section>
+        <h3>Завдання 4. Фільтрація за віком</h3>
+
+        <input type="number" id="ageInput" placeholder="Мінімальний вік" min="0" max="120">
+        <button id="filterButton">Фільтрувати за віком</button>
+    </section>
+
+    <!-- Завдання 5 -->
+    <section>
+        <h3>Завдання 5. Фільтрація за містом</h3>
+
+        <input type="text" id="cityInput" placeholder="Введіть місто">
+        <button id="filterCityButton">Фільтрувати за містом</button>
+    </section>
+
+    <!-- Завдання 6 -->
+    <section>
+        <h3>Завдання 6. Скидання фільтрів</h3>
+
+        <button id="resetButton">Скинути фільтри</button>
+    </section>
+
+    <!-- Завдання 7 -->
+    <section>
+        <h3>Завдання 7. Динамічне оновлення таблиці</h3>
+        <p>Таблиця автоматично оновлюється під час введення віку або міста.</p>
+    </section>
+
+    <!-- Завдання 8 -->
+    <section>
+        <h3>Завдання 8. Використання debugger</h3>
+
+        <button id="debugButton">Перевірити фільтрацію через debugger</button>
+        <p>Для перевірки відкрий інструменти розробника браузера клавішею F12.</p>
+    </section>
+
+    <!-- Завдання 9 -->
+    <section>
+        <h3>Завдання 9. Збереження даних у Local Storage</h3>
+
+        <button id="saveButton">Зберегти користувачів</button>
+        <p id="saveStatus" class="status"></p>
+    </section>
+
+    <!-- Завдання 10 -->
+    <section>
+        <h3>Завдання 10. Завантаження даних з Local Storage</h3>
+
+        <button id="loadButton">Завантажити користувачів</button>
+        <p id="loadStatus" class="status"></p>
+    </section>
+
+    <script>
+        // Завдання 1: масив користувачів
+        const defaultUsers = [
+            { name: "Alice", age: 25, city: "Kyiv" },
+            { name: "Bob", age: 30, city: "Lviv" },
+            { name: "Charlie", age: 35, city: "Odesa" },
+            { name: "David", age: 22, city: "Kyiv" },
+            { name: "Emma", age: 28, city: "Lviv" },
+            { name: "Frank", age: 40, city: "Kharkiv" },
+            { name: "Olena", age: 19, city: "Lutsk" },
+            { name: "Ivan", age: 32, city: "Odesa" }
+        ];
+
+        let users = defaultUsers.map(user => ({ ...user }));
+
+        // Завдання 2 і 3: відображення даних та налагодження
+        function displayUsers(userList) {
+            console.log("Відображення користувачів:", userList);
+            console.table(userList);
+
+            const tableBody = document.getElementById("userTableBody");
+            tableBody.innerHTML = "";
+
+            userList.forEach(user => {
+                const row = tableBody.insertRow();
+
+                row.insertCell(0).textContent = user.name;
+                row.insertCell(1).textContent = user.age;
+                row.insertCell(2).textContent = user.city;
+            });
+
+            document.getElementById("resultCount").textContent =
+                `Знайдено користувачів: ${userList.length}`;
+        }
+
+        // Завдання 4, 5 і 7: спільна фільтрація
+        function updateTable() {
+            const ageValue = document.getElementById("ageInput").value;
+            const city = document.getElementById("cityInput").value
+                .trim()
+                .toLowerCase();
+
+            const age = ageValue === "" ? NaN : Number(ageValue);
+
+            const filteredUsers = users.filter(user =>
+                (Number.isNaN(age) || user.age >= age) &&
+                (city === "" || user.city.toLowerCase().includes(city))
+            );
+
+            displayUsers(filteredUsers);
+        }
+
+        // Фільтрація за віком
+        document.getElementById("filterButton").onclick = function() {
+            updateTable();
+        };
+
+        // Фільтрація за містом
+        document.getElementById("filterCityButton").onclick = function() {
+            updateTable();
+        };
+
+        // Завдання 6: скидання фільтрів
+        document.getElementById("resetButton").onclick = function() {
+            document.getElementById("ageInput").value = "";
+            document.getElementById("cityInput").value = "";
+            displayUsers(users);
+        };
+
+        // Завдання 7: динамічне оновлення
+        document.getElementById("ageInput").addEventListener("input", updateTable);
+        document.getElementById("cityInput").addEventListener("input", updateTable);
+
+        // Завдання 8: налагодження за допомогою debugger
+        document.getElementById("debugButton").onclick = function() {
+            const ageValue = document.getElementById("ageInput").value;
+            const city = document.getElementById("cityInput").value
+                .trim()
+                .toLowerCase();
+
+            const age = ageValue === "" ? NaN : Number(ageValue);
+
+            debugger;
+
+            const filteredUsers = users.filter(user =>
+                (Number.isNaN(age) || user.age >= age) &&
+                (city === "" || user.city.toLowerCase().includes(city))
+            );
+
+            displayUsers(filteredUsers);
+        };
+
+        // Завдання 9: збереження даних у Local Storage
+        document.getElementById("saveButton").onclick = function() {
+            try {
+                localStorage.setItem("users", JSON.stringify(users));
+
+                document.getElementById("saveStatus").textContent =
+                    "Дані користувачів успішно збережено!";
+                console.log("Користувачів збережено в Local Storage.");
+            } catch (error) {
+                document.getElementById("saveStatus").textContent =
+                    "Помилка збереження даних.";
+                console.error("Помилка Local Storage:", error);
+            }
+        };
+
+        // Завдання 10: завантаження даних
+        document.getElementById("loadButton").onclick = function() {
+            try {
+                const savedUsers = JSON.parse(localStorage.getItem("users"));
+
+                if (Array.isArray(savedUsers)) {
+                    users = savedUsers;
+                    updateTable();
+
+                    document.getElementById("loadStatus").textContent =
+                        "Збережені дані успішно завантажено!";
+                } else {
+                    document.getElementById("loadStatus").textContent =
+                        "Збережених даних немає.";
+                }
+            } catch (error) {
+                document.getElementById("loadStatus").textContent =
+                    "Не вдалося завантажити дані.";
+                console.error("Помилка завантаження:", error);
+            }
+        };
+
+        // Початкове відображення таблиці
+        displayUsers(users);
+    </script>
+
+</body>
+</html>
